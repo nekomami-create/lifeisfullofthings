@@ -73,7 +73,7 @@ export function App() {
 
         <section class="card">
           <div class="card-head">
-            <h2>使った時間と残りの時間</h2>
+            <h2>消費した時間と残りの時間</h2>
             <UnitToggle unit={unit} onChange={setUnit} />
           </div>
           <LifeBars life={life} used={used} rest={rest} unit={unit} />

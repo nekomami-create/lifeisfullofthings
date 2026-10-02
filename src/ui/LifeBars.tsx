@@ -45,7 +45,7 @@ export function LifeBars({ life, used, rest, unit }: Props) {
       <StackBar totals={life} label="生涯" unit={unit} />
       {used && rest && (
         <>
-          <StackBar totals={used} label="使った時間" unit={unit} dim />
+          <StackBar totals={used} label="消費した時間" unit={unit} dim />
           <StackBar totals={rest} label="残りの時間" unit={unit} />
         </>
       )}

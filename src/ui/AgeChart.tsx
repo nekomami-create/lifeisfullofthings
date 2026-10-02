@@ -10,8 +10,8 @@ interface Props {
 }
 
 const W = 340;
-const H = 210;
-const PAD = { l: 26, r: 8, t: 22, b: 22 };
+const H = 222;
+const PAD = { l: 26, r: 8, t: 34, b: 22 };
 const PW = W - PAD.l - PAD.r;
 const PH = H - PAD.t - PAD.b;
 
@@ -74,10 +74,12 @@ export function AgeChart({ params, age, focusAge, onPick }: Props) {
     >
       {phases.map((p) => (
         <g key={p.label}>
-          <line class="phase" x1={x(p.from) + 1} x2={x(p.to) - 1} y1={PAD.t - 12} y2={PAD.t - 12} />
-          <text class="phase-t" x={(x(p.from) + x(p.to)) / 2} y={PAD.t - 16}>
-            {p.label}
-          </text>
+          <line class="phase" x1={x(p.from) + 3} x2={x(p.to) - 3} y1={PAD.t - 9} y2={PAD.t - 9} />
+          {x(p.to) - x(p.from) >= 26 && (
+            <text class="phase-t" x={(x(p.from) + x(p.to)) / 2} y={PAD.t - 16}>
+              {p.label}
+            </text>
+          )}
         </g>
       ))}
 
@@ -106,7 +108,12 @@ export function AgeChart({ params, age, focusAge, onPick }: Props) {
         <>
           <rect class="past" x={PAD.l} y={PAD.t} width={x(age) - PAD.l} height={PH} />
           <line class="now" x1={x(age)} x2={x(age)} y1={PAD.t - 4} y2={PAD.t + PH} />
-          <text class="now-t" x={x(age)} y={PAD.t + PH + 0} dy="-4" text-anchor="middle">
+          <text
+            class="now-t"
+            x={x(age) + (age > L * 0.85 ? -5 : 5)}
+            y={PAD.t + 12}
+            text-anchor={age > L * 0.85 ? 'end' : 'start'}
+          >
             今
           </text>
         </>

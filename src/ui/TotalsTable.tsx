@@ -10,7 +10,7 @@ interface Props {
 
 export function TotalsTable({ life, used, rest, unit }: Props) {
   const cols: { label: string; t: Totals }[] = [{ label: '生涯', t: life }];
-  if (used && rest) cols.push({ label: '使った', t: used }, { label: '残り', t: rest });
+  if (used && rest) cols.push({ label: '消費', t: used }, { label: '残り', t: rest });
   const sums = cols.map((c) => sumTotals(c.t));
   return (
     <div class="table-wrap">

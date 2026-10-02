@@ -25,7 +25,7 @@ export function SummaryCard({ params, age, life, rest }: Props) {
         <p class="hero-sub">
           人生{params.lifespan}年のうち {fmt1((life.free / total) * 100)}%（約{fmt1(life.free / HOURS_PER_YEAR)}年分）
         </p>
-        <p class="hint">↑ 生年月日を入れると、使った時間と残りの時間に分かれます</p>
+        <p class="hint">↑ 生年月日を入れると、消費した時間と残りの時間に分かれます</p>
       </section>
     );
   }
