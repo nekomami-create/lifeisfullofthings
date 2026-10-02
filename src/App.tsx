@@ -72,11 +72,8 @@ export function App() {
         <SummaryCard params={params} age={age} now={now} life={life} rest={rest} />
 
         <section class="card">
-          <div class="card-head">
-            <h2>消費した時間と残りの時間</h2>
-            <UnitToggle unit={unit} onChange={setUnit} />
-          </div>
-          <LifeBars life={life} used={used} rest={rest} unit={unit} />
+          <h2 class="mb">消費した時間と残りの時間</h2>
+          <LifeBars life={life} used={used} rest={rest} />
         </section>
 
         <section class="card">

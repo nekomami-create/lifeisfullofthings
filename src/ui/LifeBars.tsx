@@ -1,21 +1,20 @@
 import { CATEGORIES, sumTotals, type Totals } from '../model/lifeModel';
-import { fmtUnit, type Unit } from '../format';
+import { fmtInt } from '../format';
 
 interface Props {
   life: Totals;
   used: Totals | null;
   rest: Totals | null;
-  unit: Unit;
 }
 
 /** 1本の100%積み上げ横棒。区切りは2pxの隙間 */
-function StackBar({ totals, label, unit, dim }: { totals: Totals; label: string; unit: Unit; dim?: boolean }) {
+function StackBar({ totals, label, dim }: { totals: Totals; label: string; dim?: boolean }) {
   const total = sumTotals(totals);
   return (
     <div class={`lbar${dim ? ' dim' : ''}`}>
       <div class="lbar-head">
         <span>{label}</span>
-        <span class="num">{fmtUnit(total, unit === '%' ? 'h' : unit, total)}</span>
+        <span class="num">{fmtInt(total)}h</span>
       </div>
       <div class="lbar-track" role="img" aria-label={`${label}の内訳`}>
         {total > 0 &&
@@ -28,7 +27,7 @@ function StackBar({ totals, label, unit, dim }: { totals: Totals; label: string;
                 key={c.key}
                 class="lbar-seg"
                 style={{ flexGrow: v, background: `var(--c-${c.key})` }}
-                title={`${c.label} ${fmtUnit(v, unit, total)}`}
+                title={`${c.label} ${fmtInt(v)}h（${Math.round(pct)}%）`}
               >
                 {pct >= 9 && <span>{Math.round(pct)}%</span>}
               </div>
@@ -39,14 +38,14 @@ function StackBar({ totals, label, unit, dim }: { totals: Totals; label: string;
   );
 }
 
-export function LifeBars({ life, used, rest, unit }: Props) {
+export function LifeBars({ life, used, rest }: Props) {
   return (
     <div class="lbars">
-      <StackBar totals={life} label="生涯" unit={unit} />
+      <StackBar totals={life} label="生涯" />
       {used && rest && (
         <>
-          <StackBar totals={used} label="消費した時間" unit={unit} dim />
-          <StackBar totals={rest} label="残りの時間" unit={unit} />
+          <StackBar totals={used} label="消費した時間" dim />
+          <StackBar totals={rest} label="残りの時間" />
         </>
       )}
     </div>
