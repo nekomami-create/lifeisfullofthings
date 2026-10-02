@@ -1,74 +1,80 @@
-/* カテゴリ色は dataviz の検証済み8色を、積み上げ順（CATEGORIES）で隣接ペアが通る並びにしたもの */
+/* カテゴリ色は積み上げ順（CATEGORIES）の隣接ペアで色覚多様性チェックを通した8色。
+   入れ替えるときは再検証すること */
 :root {
   color-scheme: light;
-  --bg: #f4f3f0;
-  --surface: #fcfcfb;
-  --surface-2: #f0efec;
-  --text: #0b0b0b;
-  --text-2: #52514e;
-  --muted: #8a8984;
-  --line: #e2e1dc;
-  --accent: #1baf7a;
-  --accent-ink: #0d7a52;
-  --warn-bg: #fdecec;
-  --warn-ink: #9b1c1c;
+  --font-num: 'Outfit', system-ui, sans-serif;
+  --bg: #eef0f4;
+  --surface: #fbfbfd;
+  --surface-2: #e9ecf1;
+  --text: #1b2130;
+  --text-2: #545c6d;
+  --muted: #8a91a0;
+  --line: #e0e4eb;
+  --accent: #2a9d8f;
+  --accent-ink: #1d7a6f;
+  --ring: #3b4660;
+  --warn-bg: #fbeceb;
+  --warn-ink: #9b2c1c;
 
-  --c-free: #1baf7a;
-  --c-housework: #eda100;
-  --c-childcare: #e87ba4;
-  --c-study: #008300;
-  --c-commute: #4a3aa7;
-  --c-care: #e34948;
-  --c-sleep: #2a78d6;
-  --c-work: #eb6834;
+  --c-free: #2a9d8f;
+  --c-housework: #d9a441;
+  --c-childcare: #e07a8f;
+  --c-study: #6a994e;
+  --c-commute: #7b6cc2;
+  --c-care: #e76f51;
+  --c-sleep: #264f8f;
+  --c-work: #ee9b4f;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    color-scheme: dark;
-    --bg: #111110;
-    --surface: #1a1a19;
-    --surface-2: #262624;
-    --text: #ffffff;
-    --text-2: #c3c2b7;
-    --muted: #8f8e88;
-    --line: #33332f;
-    --accent: #199e70;
-    --accent-ink: #4fd3a3;
-    --warn-bg: #3a1717;
-    --warn-ink: #ffb4b4;
+  color-scheme: dark;
+  --bg: #0f1217;
+  --surface: #171a20;
+  --surface-2: #22262e;
+  --text: #f1f3f7;
+  --text-2: #b4bac7;
+  --muted: #838a99;
+  --line: #2a2f38;
+  --accent: #2a9d8f;
+  --accent-ink: #5fcfbf;
+  --ring: #aab3c5;
+  --warn-bg: #3a1a17;
+  --warn-ink: #ffb8ab;
 
-    --c-free: #199e70;
-    --c-housework: #c98500;
-    --c-childcare: #d55181;
-    --c-study: #008300;
-    --c-commute: #9085e9;
-    --c-care: #e66767;
-    --c-sleep: #3987e5;
-    --c-work: #d95926;
+  --c-free: #2a9d8f;
+  --c-housework: #b8892c;
+  --c-childcare: #c9607b;
+  --c-study: #5d8c43;
+  --c-commute: #8576d0;
+  --c-care: #d4603f;
+  --c-sleep: #4a74c0;
+  --c-work: #c97f36;
   }
 }
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --bg: #111110;
-  --surface: #1a1a19;
-  --surface-2: #262624;
-  --text: #ffffff;
-  --text-2: #c3c2b7;
-  --muted: #8f8e88;
-  --line: #33332f;
-  --accent: #199e70;
-  --accent-ink: #4fd3a3;
-  --warn-bg: #3a1717;
-  --warn-ink: #ffb4b4;
-  --c-free: #199e70;
-  --c-housework: #c98500;
-  --c-childcare: #d55181;
-  --c-study: #008300;
-  --c-commute: #9085e9;
-  --c-care: #e66767;
-  --c-sleep: #3987e5;
-  --c-work: #d95926;
+  --bg: #0f1217;
+  --surface: #171a20;
+  --surface-2: #22262e;
+  --text: #f1f3f7;
+  --text-2: #b4bac7;
+  --muted: #838a99;
+  --line: #2a2f38;
+  --accent: #2a9d8f;
+  --accent-ink: #5fcfbf;
+  --ring: #aab3c5;
+  --warn-bg: #3a1a17;
+  --warn-ink: #ffb8ab;
+
+  --c-free: #2a9d8f;
+  --c-housework: #b8892c;
+  --c-childcare: #c9607b;
+  --c-study: #5d8c43;
+  --c-commute: #8576d0;
+  --c-care: #d4603f;
+  --c-sleep: #4a74c0;
+  --c-work: #c97f36;
 }
 
 * {
@@ -104,6 +110,13 @@ td,
 .tick {
   font-variant-numeric: tabular-nums;
 }
+.hero-num,
+.age b,
+.pie-c2,
+.day-free b {
+  font-family: var(--font-num);
+  letter-spacing: -0.01em;
+}
 .muted {
   color: var(--muted);
 }
@@ -115,20 +128,14 @@ td,
   z-index: 10;
   display: grid;
   grid-template-columns: 1fr auto;
-  grid-template-areas: 'title age' 'birth age';
-  gap: 2px 12px;
+  grid-template-areas: 'birth age';
+  gap: 12px;
   align-items: center;
   padding: calc(10px + env(safe-area-inset-top)) 16px 10px;
   background: color-mix(in srgb, var(--bg) 88%, transparent);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line);
-}
-.top h1 {
-  grid-area: title;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-2);
 }
 .birth {
   grid-area: birth;
@@ -252,7 +259,7 @@ main {
 }
 .progress-fill {
   height: 100%;
-  background: var(--muted);
+  background: var(--ring);
   border-radius: 4px;
 }
 .progress-meta {
@@ -542,7 +549,7 @@ main {
 }
 .pie-progress {
   fill: none;
-  stroke: var(--muted);
+  stroke: var(--ring);
   stroke-width: 6;
   stroke-linecap: round;
 }
@@ -585,7 +592,7 @@ main {
   width: 14px;
   height: 4px;
   border-radius: 2px;
-  background: var(--muted);
+  background: var(--ring);
 }
 .pie-legend {
   list-style: none;
