@@ -78,7 +78,7 @@ export function App() {
 
         <section class="card">
           <h2>年齢ごとの1日の使い方</h2>
-          <p class="sub">グラフをタップ・なぞると、その年齢の1日を下に表示</p>
+          <p class="sub">グラフをタップ・なぞると、その年齢の1日を下に表示（グラフは出勤日と休日をならした平均）</p>
           <AgeChart params={params} age={age} focusAge={focusAge} onPick={setPickedAge} />
           <DayBreakdownView params={params} age={focusAge} />
         </section>

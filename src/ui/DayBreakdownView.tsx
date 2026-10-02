@@ -1,16 +1,27 @@
 import { useState } from 'preact/hooks';
-import { CATEGORIES, dayAt } from '../model/lifeModel';
+import { CATEGORIES, dayAt, totalsBetween, type Totals } from '../model/lifeModel';
 import type { Params } from '../model/params';
 import { fmtHoursPerDay } from '../format';
 
 const WEEKDAY_LABEL = { workday: '出勤日', schoolday: '登校日' } as const;
 
+type Mode = 'avg' | 'weekday' | 'holiday';
+
+/** その年齢の1年間を365で割った「平均的な1日」。上の年齢グラフと同じ値 */
+function averageDay(params: Params, age: number): Totals {
+  const y = totalsBetween(params, age, age + 1);
+  const out = {} as Totals;
+  for (const c of CATEGORIES) out[c.key] = y[c.key] / 365;
+  return out;
+}
+
 export function DayBreakdownView({ params, age }: { params: Params; age: number }) {
-  const [holiday, setHoliday] = useState(false);
+  const [mode, setMode] = useState<Mode>('avg');
   const { kind } = dayAt(params, age);
   const hasToggle = kind !== 'day';
-  const { hours } = dayAt(params, age, hasToggle && holiday);
-  const title = !hasToggle ? '1日' : holiday ? '休日' : WEEKDAY_LABEL[kind];
+  const m: Mode = hasToggle ? mode : 'avg';
+  const hours = m === 'avg' ? averageDay(params, age) : dayAt(params, age, m === 'holiday').hours;
+  const title = !hasToggle ? '1日' : m === 'avg' ? '平均的な1日' : m === 'holiday' ? '休日' : WEEKDAY_LABEL[kind];
   const rows = CATEGORIES.filter((c) => hours[c.key] > 0 || c.key === 'free');
   return (
     <div class="day">
@@ -19,13 +30,18 @@ export function DayBreakdownView({ params, age }: { params: Params; age: number 
           {age}歳の{title}
         </h3>
         {hasToggle && (
-          <div class="seg" role="group" aria-label="出勤日と休日の切り替え">
-            <button aria-pressed={!holiday} onClick={() => setHoliday(false)}>
-              {WEEKDAY_LABEL[kind]}
-            </button>
-            <button aria-pressed={holiday} onClick={() => setHoliday(true)}>
-              休日
-            </button>
+          <div class="seg" role="group" aria-label="1日の種類の切り替え">
+            {(
+              [
+                ['avg', '平均'],
+                ['weekday', WEEKDAY_LABEL[kind]],
+                ['holiday', '休日'],
+              ] as const
+            ).map(([k, label]) => (
+              <button key={k} aria-pressed={m === k} onClick={() => setMode(k)}>
+                {label}
+              </button>
+            ))}
           </div>
         )}
       </div>
