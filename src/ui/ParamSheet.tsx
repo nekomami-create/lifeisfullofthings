@@ -24,7 +24,7 @@ const GROUPS: Group[] = [
     fields: [{ key: 'lifespan', label: '寿命', min: 50, max: 100, step: 1, unit: '歳' }],
   },
   {
-    title: '1次活動（生理維持）',
+    title: '睡眠・食事・身支度',
     fields: [
       { key: 'sleep', label: '睡眠', min: 4, max: 10, step: 0.1, unit: 'h/日' },
       { key: 'meal', label: '食事', min: 0.5, max: 3, step: 0.1, unit: 'h/日' },

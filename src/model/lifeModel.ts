@@ -35,12 +35,6 @@ export const CATEGORIES: CategoryInfo[] = [
   { key: 'work', label: '労働', tier: 2 },
 ];
 
-export const TIER_LABELS: Record<Tier, string> = {
-  1: '1次活動（生理維持）',
-  2: '2次活動（義務・拘束）',
-  3: '3次活動（自由）',
-};
-
 /** ある年齢区間 [start, end) で 1年あたり perYear 時間を使う */
 interface Segment {
   start: number;
