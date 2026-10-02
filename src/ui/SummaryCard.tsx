@@ -5,15 +5,16 @@ import { fmt1, fmtInt } from '../format';
 interface Props {
   params: Params;
   age: number | null;
-  now: Date;
   life: Totals;
   rest: Totals | null;
+  /** 秒単位で更新する残りの自由時間（年齢を丸めずに計算） */
+  restFreeLive: number | null;
 }
 
 const pad = (n: number) => String(n).padStart(2, '0');
 
-export function SummaryCard({ params, age, life, rest }: Props) {
-  if (age === null || rest === null) {
+export function SummaryCard({ params, age, life, rest, restFreeLive }: Props) {
+  if (age === null || rest === null || restFreeLive === null) {
     const total = sumTotals(life);
     return (
       <section class="card hero">
@@ -35,6 +36,11 @@ export function SummaryCard({ params, age, life, rest }: Props) {
   const restHoursAll = restYears * HOURS_PER_YEAR;
   const perDay = restYears > 0 ? rest.free / (restYears * 365) : 0;
 
+  const freeSec = Math.max(0, Math.floor(restFreeLive * 3600));
+  const fh = Math.floor(freeSec / 3600);
+  const fm = Math.floor((freeSec % 3600) / 60);
+  const fs = freeSec % 60;
+
   // 寿命までのカウントダウン（秒単位）
   const secLeft = Math.max(0, Math.floor(restHoursAll * 3600));
   const h = Math.floor(secLeft / 3600);
@@ -44,12 +50,20 @@ export function SummaryCard({ params, age, life, rest }: Props) {
   return (
     <section class="card hero">
       <p class="hero-label">残りの自由時間</p>
-      <p class="hero-num">
-        {fmtInt(rest.free)}
-        <small>時間</small>
+      <p class="hero-num live" aria-live="off">
+        <span>
+          {fmtInt(fh)}
+          <small>時間</small>
+        </span>
+        <span class="hero-ms">
+          {pad(fm)}
+          <small>分</small>
+          {pad(fs)}
+          <small>秒</small>
+        </span>
       </p>
       <p class="hero-sub">
-        約{fmt1(rest.free / HOURS_PER_YEAR)}年分　寿命まで1日平均 {fmt1(perDay)}時間
+        約{fmt1(restFreeLive / HOURS_PER_YEAR)}年分　寿命まで1日平均 {fmt1(perDay)}時間
       </p>
 
       <div class="progress" role="img" aria-label={`人生の${fmt1(progress * 100)}%を経過`}>

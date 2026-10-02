@@ -69,7 +69,13 @@ export function App() {
 
         <LifePie params={params} life={life} age={age} />
 
-        <SummaryCard params={params} age={age} now={now} life={life} rest={rest} />
+        <SummaryCard
+          params={params}
+          age={age}
+          life={life}
+          rest={rest}
+          restFreeLive={age === null ? null : totalsBetween(params, age, params.lifespan).free}
+        />
 
         <section class="card">
           <h2 class="mb">消費した時間と残りの時間</h2>
