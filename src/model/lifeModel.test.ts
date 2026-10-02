@@ -80,6 +80,14 @@ describe('平日1日', () => {
     expect(dayAt(p, 35).hours.free).toBeCloseTo(dayAt(p, 25).hours.free - 1.5);
   });
 
+  it('休日は労働・通勤を除く', () => {
+    const d = dayAt(p, 25, true);
+    expect(d.kind).toBe('workday');
+    expect(d.hours.work).toBe(0);
+    expect(d.hours.commute).toBe(0);
+    expect(d.hours.free).toBeCloseTo(24 - 7 - 1.5 - 1.2 - 1.0);
+  });
+
   it('学生は登校日', () => {
     const d = dayAt(p, 16);
     expect(d.kind).toBe('schoolday');

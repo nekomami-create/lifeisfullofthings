@@ -161,8 +161,11 @@ export interface DayBreakdown {
   hours: Totals;
 }
 
-/** 指定年齢の「平日1日」の内訳 */
-export function dayAt(p: Params, age: number): DayBreakdown {
+/**
+ * 指定年齢の1日の内訳。kind はその年齢の平日の種類（出勤日・登校日・どちらでもない日）。
+ * holiday なら労働・学業・通勤通学を除いた休日の内訳を返す
+ */
+export function dayAt(p: Params, age: number, holiday = false): DayBreakdown {
   const h: Totals = {
     sleep: p.sleep,
     care: p.meal + p.hygiene,
@@ -186,6 +189,7 @@ export function dayAt(p: Params, age: number): DayBreakdown {
       h.commute = p.schoolCommute;
     }
   }
+  if (holiday) h.work = h.study = h.commute = 0;
   h.free = 24 - sumTotals(h);
   return { kind, hours: h };
 }

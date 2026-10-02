@@ -426,16 +426,19 @@ main {
   padding-top: 12px;
   border-top: 1px solid var(--line);
 }
-.day h3 {
+.day-head {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.day h3 {
   font-size: 15px;
-  margin-bottom: 8px;
 }
 .day-free {
+  margin: 6px 0 8px;
   font-size: 13px;
-  font-weight: 400;
   color: var(--text-2);
 }
 .day-free b {
