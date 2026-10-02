@@ -14,9 +14,8 @@ import { LifeBars } from './ui/LifeBars';
 import { AgeChart } from './ui/AgeChart';
 import { DayBreakdownView } from './ui/DayBreakdownView';
 import { TotalsTable } from './ui/TotalsTable';
-import { Insights } from './ui/Insights';
+import { LifePie } from './ui/LifePie';
 import { ParamSheet } from './ui/ParamSheet';
-import { Legend } from './ui/Legend';
 
 function useNow(intervalMs: number): Date {
   const [now, setNow] = useState(() => new Date());
@@ -68,14 +67,15 @@ export function App() {
           </p>
         )}
 
+        <LifePie params={params} life={life} age={age} />
+
         <SummaryCard params={params} age={age} now={now} life={life} rest={rest} />
 
         <section class="card">
           <div class="card-head">
-            <h2>人生の内訳</h2>
+            <h2>使った時間と残りの時間</h2>
             <UnitToggle unit={unit} onChange={setUnit} />
           </div>
-          <Legend />
           <LifeBars life={life} used={used} rest={rest} unit={unit} />
         </section>
 
@@ -92,11 +92,6 @@ export function App() {
             <UnitToggle unit={unit} onChange={setUnit} />
           </div>
           <TotalsTable life={life} used={used} rest={rest} unit={unit} />
-        </section>
-
-        <section class="card">
-          <h2>このモデルから分かること</h2>
-          <Insights params={params} life={life} age={age} rest={rest} />
         </section>
 
         <p class="foot">
