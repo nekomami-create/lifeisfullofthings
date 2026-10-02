@@ -11,7 +11,7 @@ export function Header({ params, age, onChange }: Props) {
   const today = new Date().toISOString().slice(0, 10);
   return (
     <header class="top">
-      <h1>人生の時間配分</h1>
+      <h1>Life is full of things</h1>
       <label class="birth">
         <span>生年月日</span>
         <input

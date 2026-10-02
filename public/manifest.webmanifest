@@ -1,7 +1,7 @@
 {
-  "name": "人生の時間配分",
-  "short_name": "人生時間",
-  "description": "人生の時間配分を可視化。使った時間と残りの時間を見る。",
+  "name": "Life is full of things",
+  "short_name": "Life",
+  "description": "人生の時間配分を可視化。消費した時間と残りの時間を見る。",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
