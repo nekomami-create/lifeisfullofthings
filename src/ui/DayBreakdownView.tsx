@@ -2,6 +2,7 @@ import { useState } from 'preact/hooks';
 import { CATEGORIES, dayAt, totalsBetween, type Totals } from '../model/lifeModel';
 import type { Params } from '../model/params';
 import { fmtHoursPerDay } from '../format';
+import { useLabel } from '../labels';
 
 const WEEKDAY_LABEL = { workday: '出勤日', schoolday: '登校日' } as const;
 
@@ -17,6 +18,7 @@ function averageDay(params: Params, age: number): Totals {
 
 export function DayBreakdownView({ params, age }: { params: Params; age: number }) {
   const [mode, setMode] = useState<Mode>('avg');
+  const label = useLabel();
   const { kind } = dayAt(params, age);
   const hasToggle = kind !== 'day';
   const m: Mode = hasToggle ? mode : 'avg';
@@ -68,7 +70,7 @@ export function DayBreakdownView({ params, age }: { params: Params; age: number 
         {rows.map((c) => (
           <li key={c.key}>
             <i class="sw" style={{ background: `var(--c-${c.key})` }} />
-            <span>{c.label}</span>
+            <span>{label(c.key)}</span>
             <span class="num">{fmtHoursPerDay(hours[c.key])}</span>
           </li>
         ))}

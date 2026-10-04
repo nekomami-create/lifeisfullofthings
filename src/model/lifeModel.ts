@@ -3,6 +3,7 @@ import type { Education, Params } from './params';
 export const HOURS_PER_YEAR = 365 * 24;
 
 export type Category =
+  | 'hobby'
   | 'sleep'
   | 'care'
   | 'work'
@@ -26,6 +27,7 @@ export interface CategoryInfo {
  */
 export const CATEGORIES: CategoryInfo[] = [
   { key: 'free', label: '自由時間', tier: 3 },
+  { key: 'hobby', label: '趣味', tier: 3 },
   { key: 'housework', label: '家事・買い物', tier: 2 },
   { key: 'childcare', label: '育児', tier: 2 },
   { key: 'study', label: '学校・勉強', tier: 2 },
@@ -85,6 +87,7 @@ function segments(p: Params): Record<Exclude<Category, 'free'>, Segment[]> {
   return {
     sleep: [daily(p.sleep, 0, L)],
     care: [daily(p.meal + p.hygiene, 0, L)],
+    hobby: [daily(p.hobby, p.hobbyStart, p.hobbyEnd)],
     housework: [daily(p.housework, 0, L)],
     childcare: [daily(p.childcare, p.childcareStart, p.childcareEnd)],
     work: [work],
@@ -164,6 +167,7 @@ export function dayAt(p: Params, age: number, holiday = false): DayBreakdown {
     sleep: p.sleep,
     care: p.meal + p.hygiene,
     housework: p.housework,
+    hobby: age >= p.hobbyStart && age < p.hobbyEnd ? p.hobby : 0,
     childcare: age >= p.childcareStart && age < p.childcareEnd ? p.childcare : 0,
     work: 0,
     study: 0,
@@ -198,4 +202,13 @@ export function ageFromBirthDate(birthDate: string, now: Date = new Date()): num
   if (isNaN(birth.getTime())) return null;
   const age = (now.getTime() - birth.getTime()) / MS_PER_YEAR;
   return age >= 0 ? age : null;
+}
+
+/** 表示名。趣味だけはユーザーが名前を付けられる */
+export function categoryLabels(p: Params): Record<Category, string> {
+  const out = {} as Record<Category, string>;
+  for (const c of CATEGORIES) out[c.key] = c.label;
+  const name = p.hobbyName.trim();
+  if (name) out.hobby = name;
+  return out;
 }

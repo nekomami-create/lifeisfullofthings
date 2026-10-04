@@ -16,6 +16,7 @@ interface Group {
   title: string;
   fields: Field[];
   education?: boolean;
+  hobbyName?: boolean;
 }
 
 const GROUPS: Group[] = [
@@ -40,6 +41,15 @@ const GROUPS: Group[] = [
       { key: 'workHours', label: '所定労働時間', min: 2, max: 12, step: 0.5, unit: 'h/日' },
       { key: 'overtime', label: '残業', min: 0, max: 100, step: 1, unit: 'h/月' },
       { key: 'commute', label: '通勤（往復）', min: 0, max: 4, step: 0.1, unit: 'h/日' },
+    ],
+  },
+  {
+    title: '趣味',
+    hobbyName: true,
+    fields: [
+      { key: 'hobby', label: '1日の時間', min: 0, max: 8, step: 0.1, unit: 'h/日' },
+      { key: 'hobbyStart', label: '何歳から', min: 0, max: 100, step: 1, unit: '歳' },
+      { key: 'hobbyEnd', label: '何歳まで', min: 0, max: 100, step: 1, unit: '歳' },
     ],
   },
   {
@@ -87,6 +97,8 @@ export function ParamSheet({ open, params, onChange, onClose }: Props) {
     if (key === 'workEnd' && next.workStart >= v) next.workStart = v - 1;
     if (key === 'childcareStart' && next.childcareEnd < v) next.childcareEnd = v;
     if (key === 'childcareEnd' && next.childcareStart > v) next.childcareStart = v;
+    if (key === 'hobbyStart' && next.hobbyEnd < v) next.hobbyEnd = v;
+    if (key === 'hobbyEnd' && next.hobbyStart > v) next.hobbyStart = v;
     onChange(next);
   };
 
@@ -111,6 +123,22 @@ export function ParamSheet({ open, params, onChange, onClose }: Props) {
           {GROUPS.map((g) => (
             <details key={g.title} open={g.title === '人生' || g.title === '労働'}>
               <summary>{g.title}</summary>
+              {g.hobbyName && (
+                <div class="field">
+                  <label class="f-label" for="p-hobbyName">
+                    名前
+                  </label>
+                  <input
+                    id="p-hobbyName"
+                    class="f-text"
+                    type="text"
+                    maxLength={16}
+                    placeholder="例：執筆、ランニング"
+                    value={params.hobbyName}
+                    onInput={(e) => onChange({ ...params, hobbyName: e.currentTarget.value })}
+                  />
+                </div>
+              )}
               {g.education && (
                 <div class="field">
                   <span class="f-label">最終学歴</span>
