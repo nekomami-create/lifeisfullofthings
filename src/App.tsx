@@ -15,6 +15,8 @@ import { AgeChart } from './ui/AgeChart';
 import { DayBreakdownView } from './ui/DayBreakdownView';
 import { TotalsTable } from './ui/TotalsTable';
 import { LifePie } from './ui/LifePie';
+import { LabelsContext } from './labels';
+import { categoryLabels } from './model/lifeModel';
 import { ParamSheet } from './ui/ParamSheet';
 
 function useNow(intervalMs: number): Date {
@@ -56,8 +58,10 @@ export function App() {
     Math.ceil(params.lifespan) - 1,
   );
 
+  const labels = useMemo(() => categoryLabels(params), [params]);
+
   return (
-    <>
+    <LabelsContext.Provider value={labels}>
       <Header params={params} age={rawAge} onChange={setParams} />
       <main>
         {overbooked.length > 0 && (
@@ -111,7 +115,7 @@ export function App() {
         onChange={setParams}
         onClose={() => setSheetOpen(false)}
       />
-    </>
+    </LabelsContext.Provider>
   );
 }
 

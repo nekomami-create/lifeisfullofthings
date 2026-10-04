@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { DEFAULT_PARAMS } from './params';
 import {
   ageFromBirthDate,
+  categoryLabels,
   dayAt,
   lifeTotals,
   overbookedAges,
@@ -40,6 +41,33 @@ describe('デフォルト値で元モデルを再現する', () => {
 
   it('設定が24時間を超える年齢はない', () => {
     expect(overbookedAges(p)).toEqual([]);
+  });
+});
+
+describe('趣味', () => {
+  const h = { ...p, hobbyName: '執筆', hobby: 1, hobbyStart: 40, hobbyEnd: 50 };
+
+  it('期間中の時間だけ自由時間から差し引く', () => {
+    const base = lifeTotals(p);
+    const t = lifeTotals(h);
+    expect(t.hobby).toBeCloseTo(365 * 10);
+    expect(t.free).toBeCloseTo(base.free - 365 * 10);
+    expect(sumTotals(t)).toBeCloseTo(657_000);
+  });
+
+  it('初期値では0', () => {
+    expect(lifeTotals(p).hobby).toBe(0);
+  });
+
+  it('1日の内訳にも入る', () => {
+    expect(dayAt(h, 45).hours.hobby).toBe(1);
+    expect(dayAt(h, 45, true).hours.hobby).toBe(1);
+    expect(dayAt(h, 55).hours.hobby).toBe(0);
+  });
+
+  it('名前を付けると表示名になる', () => {
+    expect(categoryLabels(h).hobby).toBe('執筆');
+    expect(categoryLabels({ ...h, hobbyName: '  ' }).hobby).toBe('趣味');
   });
 });
 

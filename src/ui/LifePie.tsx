@@ -1,6 +1,7 @@
 import { CATEGORIES, sumTotals, type Totals } from '../model/lifeModel';
 import type { Params } from '../model/params';
 import { fmt1 } from '../format';
+import { useLabel } from '../labels';
 
 interface Props {
   params: Params;
@@ -40,6 +41,7 @@ function arc(r: number, f0: number, f1: number): string {
 
 export function LifePie({ params, life, age }: Props) {
   const total = sumTotals(life);
+  const label = useLabel();
   let acc = 0;
   const slices = CATEGORIES.map((c) => {
     const f = Math.max(0, life[c.key]) / total;
@@ -63,7 +65,7 @@ export function LifePie({ params, life, age }: Props) {
         {slices.map((s) => (
           <path key={s.key} d={sector(s.f0, s.f1)} fill={`var(--c-${s.key})`} class="pie-seg">
             <title>
-              {s.label} {fmt1(s.f * 100)}%
+              {label(s.key)} {fmt1(s.f * 100)}%
             </title>
           </path>
         ))}
@@ -94,7 +96,7 @@ export function LifePie({ params, life, age }: Props) {
         {slices.map((s) => (
           <li key={s.key}>
             <i class="sw" style={{ background: `var(--c-${s.key})` }} />
-            <span>{s.label}</span>
+            <span>{label(s.key)}</span>
             <span class="num">{fmt1(s.f * 100)}%</span>
           </li>
         ))}

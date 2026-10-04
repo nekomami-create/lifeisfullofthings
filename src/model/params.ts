@@ -9,6 +9,11 @@ export interface Params {
   meal: number; // h/日
   hygiene: number; // h/日
 
+  hobbyName: string; // 趣味の名前（自由記述）
+  hobby: number; // h/日（期間中は毎日）
+  hobbyStart: number;
+  hobbyEnd: number;
+
   housework: number; // 家事・買い物 h/日（全期間）
   childcare: number; // 育児 h/日（育児期のみ）
   childcareStart: number;
@@ -37,6 +42,12 @@ export const DEFAULT_PARAMS: Params = {
   sleep: 7,
   meal: 1.5,
   hygiene: 1.2,
+
+  // 趣味は初期値0。自由時間の中から切り出して色分けする
+  hobbyName: '',
+  hobby: 0,
+  hobbyStart: 20,
+  hobbyEnd: 75,
 
   // 元モデルの「家事・育児 1.3h/日 × 75年」と同じ総量になるよう分割
   // 1.0h × 75年 + 1.5h × 15年 = 35,587.5h

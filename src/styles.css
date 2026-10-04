@@ -17,6 +17,7 @@
   --warn-ink: #9b2c1c;
 
   --c-free: #2a9d8f;
+  --c-hobby: #9aa1ad;
   --c-housework: #d9a441;
   --c-childcare: #e07a8f;
   --c-study: #6a994e;
@@ -43,6 +44,7 @@
   --warn-ink: #ffb8ab;
 
   --c-free: #2a9d8f;
+  --c-hobby: #6b7280;
   --c-housework: #b8892c;
   --c-childcare: #c9607b;
   --c-study: #5d8c43;
@@ -68,6 +70,7 @@
   --warn-ink: #ffb8ab;
 
   --c-free: #2a9d8f;
+  --c-hobby: #6b7280;
   --c-housework: #b8892c;
   --c-childcare: #c9607b;
   --c-study: #5d8c43;
@@ -751,6 +754,16 @@ main {
   height: 6px;
   border-radius: 50%;
   background: var(--accent);
+}
+.f-text {
+  width: 100%;
+  font: inherit;
+  font-size: 16px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 10px;
 }
 .f-row {
   display: flex;

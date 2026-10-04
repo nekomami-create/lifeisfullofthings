@@ -1,5 +1,6 @@
 import { CATEGORIES, sumTotals, type Totals } from '../model/lifeModel';
 import { fmtInt } from '../format';
+import { useLabel } from '../labels';
 
 interface Props {
   life: Totals;
@@ -10,6 +11,7 @@ interface Props {
 /** 1本の100%積み上げ横棒。区切りは2pxの隙間 */
 function StackBar({ totals, label, dim }: { totals: Totals; label: string; dim?: boolean }) {
   const total = sumTotals(totals);
+  const nameOf = useLabel();
   return (
     <div class={`lbar${dim ? ' dim' : ''}`}>
       <div class="lbar-head">
@@ -27,7 +29,7 @@ function StackBar({ totals, label, dim }: { totals: Totals; label: string; dim?:
                 key={c.key}
                 class="lbar-seg"
                 style={{ flexGrow: v, background: `var(--c-${c.key})` }}
-                title={`${c.label} ${fmtInt(v)}h（${Math.round(pct)}%）`}
+                title={`${nameOf(c.key)} ${fmtInt(v)}h（${Math.round(pct)}%）`}
               >
                 {pct >= 9 && <span>{Math.round(pct)}%</span>}
               </div>
