@@ -1,5 +1,6 @@
 import { useMemo, useRef } from 'preact/hooks';
-import { CATEGORIES, graduationAge, yearlyBreakdown } from '../model/lifeModel';
+import { CATEGORIES, graduationAge, schoolStages, yearlyBreakdown } from '../model/lifeModel';
+import { t } from '../i18n';
 import type { Params } from '../model/params';
 
 interface Props {
@@ -51,9 +52,9 @@ export function AgeChart({ params, age, focusAge, onPick }: Props) {
 
   const grad = graduationAge(params);
   const phases = [
-    { label: '学生', from: 6, to: Math.min(grad, params.workStart) },
-    { label: '現役', from: params.workStart, to: params.workEnd },
-    { label: '老後', from: params.workEnd, to: L },
+    { label: t.phaseStudent, from: schoolStages(params)[0].start, to: Math.min(grad, params.workStart) },
+    { label: t.phaseWorking, from: params.workStart, to: params.workEnd },
+    { label: t.phaseRetired, from: params.workEnd, to: L },
   ].filter((p) => p.to > p.from && p.from < L);
 
   const xTicks: number[] = [];
@@ -65,7 +66,7 @@ export function AgeChart({ params, age, focusAge, onPick }: Props) {
       class="agechart"
       viewBox={`0 0 ${W} ${H}`}
       role="img"
-      aria-label="年齢ごとの1日あたり時間配分"
+      aria-label={t.ageChartAria}
       onPointerDown={(e) => {
         (e.currentTarget as Element).setPointerCapture?.(e.pointerId);
         pick(e);
@@ -114,7 +115,7 @@ export function AgeChart({ params, age, focusAge, onPick }: Props) {
             y={PAD.t + 12}
             text-anchor={age > L * 0.85 ? 'end' : 'start'}
           >
-            今
+            {t.now}
           </text>
         </>
       )}

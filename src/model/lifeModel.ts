@@ -1,4 +1,4 @@
-import type { Education, Params } from './params';
+import type { Education, Params, SchoolSystem } from './params';
 
 export const HOURS_PER_YEAR = 365 * 24;
 
@@ -44,25 +44,49 @@ interface Segment {
   perYear: number;
 }
 
-interface SchoolStage {
-  label: string;
+export interface SchoolStage {
   start: number;
   end: number;
   perYear: (p: Params) => number;
 }
 
-const SCHOOL_STAGES: SchoolStage[] = [
-  { label: '小学校', start: 6, end: 12, perYear: (p) => p.schoolDays * p.elemHours },
-  { label: '中学校', start: 12, end: 15, perYear: (p) => p.schoolDays * p.juniorHours },
-  { label: '高校', start: 15, end: 18, perYear: (p) => p.schoolDays * p.highHours },
-  { label: '大学', start: 18, end: 22, perYear: (p) => p.univHours },
-  { label: '大学院', start: 22, end: 24, perYear: (p) => p.univHours },
+/** 5段階（初等・前期中等・後期中等・学士・修士）の [開始, 終了) 年齢 */
+export const STAGE_AGES: Record<SchoolSystem, [number, number][]> = {
+  // 小学校・中学校・高校・大学4年・大学院（修士）2年
+  jp: [[6, 12], [12, 15], [15, 18], [18, 22], [22, 24]],
+  // Kindergarten〜5th・Middle 6th〜8th・High 9th〜12th・Bachelor's 4年・Master's 2年
+  us: [[5, 11], [11, 14], [14, 18], [18, 22], [22, 24]],
+  // Primary（Reception〜Year 6）・Secondary（Year 7〜11, GCSE）・Sixth form・Bachelor's 3年・Master's 1年
+  uk: [[4, 11], [11, 16], [16, 18], [18, 21], [21, 22]],
+};
+
+const STAGE_HOURS: ((p: Params) => number)[] = [
+  (p) => p.schoolDays * p.elemHours,
+  (p) => p.schoolDays * p.juniorHours,
+  (p) => p.schoolDays * p.highHours,
+  (p) => p.univHours,
+  (p) => p.univHours,
 ];
 
 const STAGE_COUNT: Record<Education, number> = { junior: 2, high: 3, univ: 4, grad: 5 };
 
+/** 制度ごとに選べる最終学歴。米国は義務教育が高校までなので「中学まで」は出さない */
+export const EDUCATION_OPTIONS: Record<SchoolSystem, Education[]> = {
+  jp: ['junior', 'high', 'univ', 'grad'],
+  us: ['high', 'univ', 'grad'],
+  uk: ['junior', 'high', 'univ', 'grad'],
+};
+
+export function effectiveEducation(p: Params): Education {
+  const opts = EDUCATION_OPTIONS[p.schoolSystem] ?? EDUCATION_OPTIONS.jp;
+  return opts.includes(p.education) ? p.education : opts[0];
+}
+
 export function schoolStages(p: Params): SchoolStage[] {
-  return SCHOOL_STAGES.slice(0, STAGE_COUNT[p.education]);
+  const ages = STAGE_AGES[p.schoolSystem] ?? STAGE_AGES.jp;
+  return ages
+    .slice(0, STAGE_COUNT[effectiveEducation(p)])
+    .map(([start, end], i) => ({ start, end, perYear: STAGE_HOURS[i] }));
 }
 
 export function graduationAge(p: Params): number {
@@ -94,7 +118,7 @@ function segments(p: Params): Record<Exclude<Category, 'free'>, Segment[]> {
     study: schoolStages(p).map((s) => ({ start: s.start, end: s.end, perYear: s.perYear(p) })),
     commute: [
       { start: p.workStart, end: p.workEnd, perYear: p.workDays * p.commute },
-      { start: 6, end: gradAge, perYear: p.schoolDays * p.schoolCommute },
+      { start: schoolStages(p)[0].start, end: gradAge, perYear: p.schoolDays * p.schoolCommute },
     ],
   };
 }
@@ -205,10 +229,14 @@ export function ageFromBirthDate(birthDate: string, now: Date = new Date()): num
 }
 
 /** 表示名。趣味だけはユーザーが名前を付けられる */
-export function categoryLabels(p: Params): Record<Category, string> {
-  const out = {} as Record<Category, string>;
-  for (const c of CATEGORIES) out[c.key] = c.label;
+export function categoryLabels(
+  p: Params,
+  base: Record<Category, string> = JA_LABELS,
+): Record<Category, string> {
+  const out = { ...base };
   const name = p.hobbyName.trim();
   if (name) out.hobby = name;
   return out;
 }
+
+const JA_LABELS = Object.fromEntries(CATEGORIES.map((c) => [c.key, c.label])) as Record<Category, string>;

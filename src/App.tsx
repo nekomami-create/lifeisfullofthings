@@ -7,7 +7,8 @@ import {
 } from './model/lifeModel';
 import type { Params } from './model/params';
 import { loadParams, saveParams } from './storage';
-import { UNIT_LABELS, type Unit } from './format';
+import type { Unit } from './format';
+import { t } from './i18n';
 import { Header } from './ui/Header';
 import { SummaryCard } from './ui/SummaryCard';
 import { LifeBars } from './ui/LifeBars';
@@ -58,7 +59,7 @@ export function App() {
     Math.ceil(params.lifespan) - 1,
   );
 
-  const labels = useMemo(() => categoryLabels(params), [params]);
+  const labels = useMemo(() => categoryLabels(params, t.categories), [params]);
 
   return (
     <LabelsContext.Provider value={labels}>
@@ -66,8 +67,7 @@ export function App() {
       <main>
         {overbooked.length > 0 && (
           <p class="warn" role="alert">
-            ⚠ {overbooked[0]}歳{overbooked.length > 1 ? `ほか${overbooked.length - 1}年` : ''}
-            は1日の合計が24時間を超えています。パラメータを見直してください。
+            {t.overbooked(overbooked[0], overbooked.length - 1)}
           </p>
         )}
 
@@ -82,32 +82,34 @@ export function App() {
         />
 
         <section class="card">
-          <h2 class="mb">消費した時間と残りの時間</h2>
+          <h2 class="mb">{t.barsTitle}</h2>
           <LifeBars life={life} used={used} rest={rest} />
         </section>
 
         <section class="card">
-          <h2>年齢ごとの1日の使い方</h2>
-          <p class="sub">グラフをタップ・なぞると、その年齢の1日を下に表示（グラフは出勤日と休日をならした平均）</p>
+          <h2>{t.ageChartTitle}</h2>
+          <p class="sub">{t.ageChartSub}</p>
           <AgeChart params={params} age={age} focusAge={focusAge} onPick={setPickedAge} />
           <DayBreakdownView params={params} age={focusAge} />
         </section>
 
         <section class="card">
           <div class="card-head">
-            <h2>集計表</h2>
+            <h2>{t.tableTitle}</h2>
             <UnitToggle unit={unit} onChange={setUnit} />
           </div>
           <TotalsTable life={life} used={used} rest={rest} unit={unit} />
         </section>
 
         <p class="foot">
-          分類は総務省「社会生活基本調査」の1次・2次・3次活動に準拠。1年＝365日で計算。
+          {t.foot}
+          <br />
+          <a href={t.otherLangHref}>{t.otherLangLabel}</a>
         </p>
       </main>
 
       <button class="fab" onClick={() => setSheetOpen(true)} aria-haspopup="dialog">
-        ⚙ パラメータ
+        {t.paramsButton}
       </button>
       <ParamSheet
         open={sheetOpen}
@@ -122,10 +124,10 @@ export function App() {
 function UnitToggle({ unit, onChange }: { unit: Unit; onChange: (u: Unit) => void }) {
   const units: Unit[] = ['h', 'd', 'y', '%'];
   return (
-    <div class="seg" role="group" aria-label="表示単位">
+    <div class="seg" role="group" aria-label={t.unitAria}>
       {units.map((u) => (
         <button key={u} aria-pressed={u === unit} onClick={() => onChange(u)}>
-          {UNIT_LABELS[u]}
+          {t.units[u]}
         </button>
       ))}
     </div>

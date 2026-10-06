@@ -1,5 +1,6 @@
 import type { Params } from '../model/params';
 import { fmt1 } from '../format';
+import { LOCALE, t } from '../i18n';
 
 interface Props {
   params: Params;
@@ -12,8 +13,9 @@ export function Header({ params, age, onChange }: Props) {
   return (
     <header class="top">
       <label class="birth">
-        <span>生年月日</span>
+        <span>{t.birthDate}</span>
         <input
+          id="birth-date"
           type="date"
           max={today}
           value={params.birthDate}
@@ -22,14 +24,17 @@ export function Header({ params, age, onChange }: Props) {
       </label>
       <div class="age" aria-live="polite">
         {age === null ? (
-          <span class="muted">未入力</span>
+          <span class="muted">{t.notEntered}</span>
         ) : (
           <>
             <b>{fmt1(age)}</b>
-            <small>歳</small>
+            <small>{t.ageUnit}</small>
           </>
         )}
       </div>
+      <a class="lang" href={t.otherLangHref} hreflang={LOCALE === 'ja' ? 'en' : 'ja'} aria-label={t.otherLangLabel}>
+        {LOCALE === 'ja' ? 'EN' : 'JA'}
+      </a>
     </header>
   );
 }

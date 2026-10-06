@@ -130,8 +130,8 @@ td,
   top: 0;
   z-index: 10;
   display: grid;
-  grid-template-columns: 1fr auto;
-  grid-template-areas: 'birth age';
+  grid-template-columns: 1fr auto auto;
+  grid-template-areas: 'birth age lang';
   gap: 12px;
   align-items: center;
   padding: calc(10px + env(safe-area-inset-top)) 16px 10px;
@@ -293,11 +293,28 @@ main {
 }
 
 /* 単位切替などのセグメント */
+.lang {
+  grid-area: lang;
+  align-self: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-2);
+  text-decoration: none;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 9px;
+}
+.foot a {
+  color: var(--text-2);
+}
 .seg {
   display: inline-flex;
   background: var(--surface-2);
   border-radius: 9px;
   padding: 2px;
+}
+.seg.wrap {
+  flex-wrap: wrap;
 }
 .seg button {
   border: 0;
@@ -528,10 +545,15 @@ main {
 .totals tfoot th {
   text-align: left;
   font-weight: 400;
+  white-space: normal;
+}
+.totals .th-in {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 .totals tbody th .sw {
-  margin-right: 6px;
-  vertical-align: -1px;
+  flex: none;
 }
 .totals td {
   text-align: right;

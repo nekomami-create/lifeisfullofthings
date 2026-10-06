@@ -3,8 +3,7 @@ import { CATEGORIES, dayAt, totalsBetween, type Totals } from '../model/lifeMode
 import type { Params } from '../model/params';
 import { fmtHoursPerDay } from '../format';
 import { useLabel } from '../labels';
-
-const WEEKDAY_LABEL = { workday: '出勤日', schoolday: '登校日' } as const;
+import { t } from '../i18n';
 
 type Mode = 'avg' | 'weekday' | 'holiday';
 
@@ -23,21 +22,19 @@ export function DayBreakdownView({ params, age }: { params: Params; age: number 
   const hasToggle = kind !== 'day';
   const m: Mode = hasToggle ? mode : 'avg';
   const hours = m === 'avg' ? averageDay(params, age) : dayAt(params, age, m === 'holiday').hours;
-  const title = !hasToggle ? '1日' : m === 'avg' ? '平均的な1日' : m === 'holiday' ? '休日' : WEEKDAY_LABEL[kind];
+  const title = t.dayTitle(age, !hasToggle ? t.dayKinds.day : m === 'weekday' ? t.dayKinds[kind] : t.dayKinds[m]);
   const rows = CATEGORIES.filter((c) => hours[c.key] > 0 || c.key === 'free');
   return (
     <div class="day">
       <div class="day-head">
-        <h3>
-          {age}歳の{title}
-        </h3>
+        <h3>{title}</h3>
         {hasToggle && (
-          <div class="seg" role="group" aria-label="1日の種類の切り替え">
+          <div class="seg" role="group" aria-label={t.dayToggleAria}>
             {(
               [
-                ['avg', '平均'],
-                ['weekday', WEEKDAY_LABEL[kind]],
-                ['holiday', '休日'],
+                ['avg', t.dayModeAvg],
+                ['weekday', t.dayModeWeekday[kind as 'workday' | 'schoolday']],
+                ['holiday', t.dayModeHoliday],
               ] as const
             ).map(([k, label]) => (
               <button key={k} aria-pressed={m === k} onClick={() => setMode(k)}>
@@ -48,9 +45,9 @@ export function DayBreakdownView({ params, age }: { params: Params; age: number 
         )}
       </div>
       <p class="day-free">
-        自由 <b>{fmtHoursPerDay(Math.max(0, hours.free))}</b>
+        {t.dayFree} <b>{fmtHoursPerDay(Math.max(0, hours.free))}</b>
       </p>
-      <div class="day-track" role="img" aria-label={`${age}歳の${title}24時間の内訳`}>
+      <div class="day-track" role="img" aria-label={t.dayAria(title)}>
         {rows.map((c) => (
           <div
             key={c.key}
