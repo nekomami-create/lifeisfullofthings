@@ -1,5 +1,8 @@
 export type Education = 'junior' | 'high' | 'univ' | 'grad';
 
+/** 学校制度。段階ごとの年齢区切りが違う */
+export type SchoolSystem = 'jp' | 'us' | 'uk';
+
 export interface Params {
   /** 生年月日 YYYY-MM-DD。空なら「今」を使わない */
   birthDate: string;
@@ -26,6 +29,7 @@ export interface Params {
   overtime: number; // h/月
   commute: number; // 往復 h/日
 
+  schoolSystem: SchoolSystem;
   education: Education;
   schoolDays: number; // 日/年
   schoolCommute: number; // 往復 h/日
@@ -63,6 +67,7 @@ export const DEFAULT_PARAMS: Params = {
   overtime: 20,
   commute: 1.5,
 
+  schoolSystem: 'jp',
   education: 'univ',
   schoolDays: 200,
   schoolCommute: 1.0,
@@ -72,9 +77,12 @@ export const DEFAULT_PARAMS: Params = {
   univHours: 1250,
 };
 
-export const EDUCATION_LABELS: Record<Education, string> = {
-  junior: '中卒',
-  high: '高卒',
-  univ: '大卒',
-  grad: '院卒',
+/** 英語版の初期値。学校まわりだけ米国の一般的な値にする */
+export const DEFAULT_PARAMS_EN: Params = {
+  ...DEFAULT_PARAMS,
+  schoolSystem: 'us',
+  schoolDays: 180,
+  elemHours: 6.5,
+  juniorHours: 7,
+  highHours: 7.5,
 };

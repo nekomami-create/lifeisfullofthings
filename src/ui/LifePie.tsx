@@ -2,6 +2,7 @@ import { CATEGORIES, sumTotals, type Totals } from '../model/lifeModel';
 import type { Params } from '../model/params';
 import { fmt1 } from '../format';
 import { useLabel } from '../labels';
+import { t } from '../i18n';
 
 interface Props {
   params: Params;
@@ -53,8 +54,8 @@ export function LifePie({ params, life, age }: Props) {
 
   return (
     <section class="card pie-card">
-      <h2>人生{params.lifespan}年の内訳</h2>
-      <svg class="pie" viewBox={`0 0 ${S} ${S}`} role="img" aria-label="生涯の時間配分の円グラフ">
+      <h2>{t.pieTitle(params.lifespan)}</h2>
+      <svg class="pie" viewBox={`0 0 ${S} ${S}`} role="img" aria-label={t.pieAria}>
         <circle class="pie-track" cx={C} cy={C} r={R_RING} />
         {progress !== null && progress > 0 && (
           <>
@@ -80,7 +81,7 @@ export function LifePie({ params, life, age }: Props) {
             );
           })}
         <text class="pie-c1" x={C} y={C - 8}>
-          自由時間
+          {t.pieCenter}
         </text>
         <text class="pie-c2" x={C} y={C + 18}>
           {fmt1((life.free / total) * 100)}%
@@ -89,7 +90,7 @@ export function LifePie({ params, life, age }: Props) {
       {progress !== null && (
         <p class="pie-note">
           <i class="ring-sw" />
-          外周は経過した人生（{fmt1(progress * 100)}%）
+          {t.pieRingNote(fmt1(progress * 100))}
         </p>
       )}
       <ul class="pie-legend">

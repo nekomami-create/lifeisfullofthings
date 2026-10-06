@@ -1,6 +1,7 @@
 import { HOURS_PER_YEAR, sumTotals, type Totals } from '../model/lifeModel';
 import type { Params } from '../model/params';
 import { fmt1, fmtInt } from '../format';
+import { t } from '../i18n';
 
 interface Props {
   params: Params;
@@ -18,15 +19,15 @@ export function SummaryCard({ params, age, life, rest, restFreeLive }: Props) {
     const total = sumTotals(life);
     return (
       <section class="card hero">
-        <p class="hero-label">生涯の自由時間</p>
+        <p class="hero-label">{t.lifeFree}</p>
         <p class="hero-num">
           {fmtInt(life.free)}
-          <small>時間</small>
+          <small>{t.hoursWord}</small>
         </p>
         <p class="hero-sub">
-          人生{params.lifespan}年のうち {fmt1((life.free / total) * 100)}%（約{fmt1(life.free / HOURS_PER_YEAR)}年分）
+          {t.lifeFreeSub(params.lifespan, fmt1((life.free / total) * 100), fmt1(life.free / HOURS_PER_YEAR))}
         </p>
-        <p class="hint">↑ 生年月日を入れると、消費した時間と残りの時間に分かれます</p>
+        <p class="hint">{t.birthHint}</p>
       </section>
     );
   }
@@ -49,30 +50,36 @@ export function SummaryCard({ params, age, life, rest, restFreeLive }: Props) {
 
   return (
     <section class="card hero">
-      <p class="hero-label">残りの自由時間</p>
+      <p class="hero-label">{t.restFree}</p>
       <p class="hero-num live" aria-live="off">
         <span>
           {fmtInt(fh)}
-          <small>時間</small>
+          <small>{t.hoursWord}</small>
         </span>
         <span class="hero-ms">
           {pad(fm)}
-          <small>分</small>
+          <small>{t.minWord}</small>
           {pad(fs)}
-          <small>秒</small>
+          <small>{t.secWord}</small>
         </span>
       </p>
       <p class="hero-sub">
-        約{fmt1(restFreeLive / HOURS_PER_YEAR)}年分　寿命まで1日平均 {fmt1(perDay)}時間
+        {t.restFreeSub(fmt1(restFreeLive / HOURS_PER_YEAR), fmt1(perDay))}
       </p>
 
-      <div class="progress" role="img" aria-label={`人生の${fmt1(progress * 100)}%を経過`}>
+      <div class="progress" role="img" aria-label={t.progressAria(fmt1(progress * 100))}>
         <div class="progress-fill" style={{ width: `${progress * 100}%` }} />
       </div>
       <div class="progress-meta">
-        <span>経過 {fmt1(progress * 100)}%</span>
+        <span>{t.elapsed(fmt1(progress * 100))}</span>
         <span>
-          {params.lifespan}歳まで あと <b class="tick">{fmtInt(h)}</b>時間{pad(m)}分{pad(s)}秒
+          {t.countdownPrefix(params.lifespan)}
+          <b class="tick">{fmtInt(h)}</b>
+          {t.countdownH}
+          {pad(m)}
+          {t.countdownM}
+          {pad(s)}
+          {t.countdownS}
         </span>
       </div>
     </section>

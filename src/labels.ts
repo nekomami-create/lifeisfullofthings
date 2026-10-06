@@ -1,9 +1,9 @@
 import { createContext } from 'preact';
 import { useContext } from 'preact/hooks';
 import { categoryLabels, type Category } from './model/lifeModel';
-import { DEFAULT_PARAMS } from './model/params';
+import { t } from './i18n';
 
-export const LabelsContext = createContext<Record<Category, string>>(categoryLabels(DEFAULT_PARAMS));
+export const LabelsContext = createContext<Record<Category, string>>(categoryLabels(t.defaults, t.categories));
 
 export function useLabel(): (key: Category) => string {
   const labels = useContext(LabelsContext);

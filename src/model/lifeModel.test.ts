@@ -1,8 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { DEFAULT_PARAMS } from './params';
+import { DEFAULT_PARAMS, DEFAULT_PARAMS_EN } from './params';
 import {
   ageFromBirthDate,
   categoryLabels,
+  effectiveEducation,
+  graduationAge,
+  schoolStages,
   dayAt,
   lifeTotals,
   overbookedAges,
@@ -68,6 +71,35 @@ describe('趣味', () => {
   it('名前を付けると表示名になる', () => {
     expect(categoryLabels(h).hobby).toBe('執筆');
     expect(categoryLabels({ ...h, hobbyName: '  ' }).hobby).toBe('趣味');
+  });
+});
+
+describe('学校制度', () => {
+  it('米国は5歳で入学、4年制大学で22歳卒業', () => {
+    const us = DEFAULT_PARAMS_EN;
+    expect(schoolStages(us)[0].start).toBe(5);
+    expect(graduationAge(us)).toBe(22);
+    expect(lifeTotals(us).study).toBeCloseTo(180 * (6.5 * 6 + 7 * 3 + 7.5 * 4) + 1250 * 4);
+  });
+
+  it('英国は4歳で入学、学士3年で21歳卒業', () => {
+    const uk = { ...DEFAULT_PARAMS_EN, schoolSystem: 'uk' as const };
+    expect(schoolStages(uk)[0].start).toBe(4);
+    expect(graduationAge(uk)).toBe(21);
+    expect(graduationAge({ ...uk, education: 'grad' })).toBe(22);
+    expect(graduationAge({ ...uk, education: 'junior' })).toBe(16);
+  });
+
+  it('米国では「中学まで」は選べず高校卒業扱い', () => {
+    const us = { ...DEFAULT_PARAMS_EN, education: 'junior' as const };
+    expect(effectiveEducation(us)).toBe('high');
+    expect(graduationAge(us)).toBe(18);
+  });
+
+  it('通学は最初の段階から数える', () => {
+    const us = DEFAULT_PARAMS_EN;
+    const t = lifeTotals(us);
+    expect(t.commute).toBeCloseTo(245 * 1.5 * 43 + 180 * 1.0 * (22 - 5));
   });
 });
 
